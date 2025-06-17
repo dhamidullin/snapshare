@@ -17,11 +17,32 @@ export async function GET(request: NextRequest, props: Props): Promise<NextRespo
       );
     }
 
-    const filePath = path.join(fileService.dataPath, filename);
+    // Resolve the complete file path
+    const filePath = path.resolve(path.join(fileService.dataPath, filename));
+    
+    // Ensure the file is within the data directory
+    if (!filePath.startsWith(path.resolve(fileService.dataPath))) {
+      console.error('Attempted path traversal:', filePath);
+
+      return NextResponse.json(
+        { error: 'Access denied' },
+        { status: 403 }
+      );
+    }
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return NextResponse.json(
+        { error: 'File not found' },
+        { status: 404 }
+      );
+    }
+
     const contentType = mime.lookup(filename) || 'application/octet-stream';
 
     // Create a readable stream from the file
     const fileStream = fs.createReadStream(filePath);
+    
     // Create a response with the file stream
     return new NextResponse(fileStream as unknown as ReadableStream, {
       headers: {

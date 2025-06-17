@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import Header from './components/Header';
 
-const PageWrapper = styled.div`
+const MainContent = styled.main`
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: calc(100vh - 64px); /* Subtract header height */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -150,17 +151,20 @@ export default function Home() {
   }, [handleFile]);
 
   return (
-    <PageWrapper>
-      {error && <ErrorText>{error}</ErrorText>}
-      <DropZone
-        $isDragging={isDragging}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onPaste={onPaste}
-      >
-        <DropText>Drag a file or paste from clipboard</DropText>
-      </DropZone>
-    </PageWrapper>
+    <>
+      <Header />
+      <MainContent>
+        {error && <ErrorText>{error}</ErrorText>}
+        <DropZone
+          $isDragging={isDragging}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onPaste={onPaste}
+        >
+          <DropText>Drag a file or paste from clipboard</DropText>
+        </DropZone>
+      </MainContent>
+    </>
   );
 }

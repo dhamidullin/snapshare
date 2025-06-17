@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:5286"
+      - "5286:3000"
     volumes:
       - ./data:/app/data
     env_file:

@@ -17,6 +17,6 @@ RUN yarn build
 # Remove temporary data directory
 RUN rm -rf data
 
-EXPOSE 5286
+EXPOSE 3000
 
 CMD ["yarn", "start"] 
