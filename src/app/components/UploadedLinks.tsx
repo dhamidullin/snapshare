@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { copyToClipboard } from '../helpers/clipboard';
 
 interface UploadedLinksProps {
   links: string[];
@@ -65,6 +66,45 @@ const ImageWrapper = styled.div`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+    .copy-button {
+      opacity: 1;
+    }
+  }
+`;
+
+const CopyButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  padding: 6px;
+
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -83,6 +123,11 @@ const NoImagesMessage = styled.div`
 `;
 
 export const UploadedLinks: React.FC<UploadedLinksProps> = ({ links }) => {
+  const handleCopy = async (e: React.MouseEvent, link: string) => {
+    e.preventDefault(); // Prevent opening the image in new tab
+    await copyToClipboard(link);
+  };
+
   if (!links.length) {
     return <NoImagesMessage>No uploaded images yet</NoImagesMessage>;
   }
@@ -96,6 +141,14 @@ export const UploadedLinks: React.FC<UploadedLinksProps> = ({ links }) => {
               key={`${link}-${index}`}
               data-testid={`image-wrapper-${index}`}
             >
+              <CopyButton
+                className="copy-button"
+                onClick={(e) => handleCopy(e, link)}
+                data-testid={`copy-button-${index}`}
+                title="Copy link to clipboard"
+              >
+                <img src="/file.svg" alt="Copy" />
+              </CopyButton>
               <a
                 href={link}
                 target="_blank"

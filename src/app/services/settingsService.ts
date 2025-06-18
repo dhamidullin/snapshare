@@ -25,9 +25,9 @@ export const settingsService = {
   },
 
   getShowPreview(): boolean {
-    if (typeof window === 'undefined') return true;
+    if (typeof window === 'undefined') return false;
     const saved = localStorage.getItem(STORAGE_KEYS.SHOW_PREVIEW);
-    return saved !== null ? saved === 'true' : true;
+    return saved !== null ? saved === 'true' : false;
   },
 
   setShowPreview(value: boolean): void {
@@ -63,13 +63,13 @@ export const settingsService = {
   addUploadedLink(link: string): void {
     if (typeof window === 'undefined') return;
     const links = this.getUploadedLinks();
-    
+
     // Add new link to the beginning of the array
     const updatedLinks = [link, ...links];
-    
+
     // Keep only the last MAX_STORED_LINKS items
     const trimmedLinks = updatedLinks.slice(0, MAX_STORED_LINKS);
-    
+
     localStorage.setItem(STORAGE_KEYS.UPLOADED_LINKS, JSON.stringify(trimmedLinks));
   },
 
